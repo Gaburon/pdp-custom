@@ -1,10 +1,18 @@
 import React from "react"
 import { useProduct } from 'vtex.product-context'
+import { useCssHandles } from 'vtex.css-handles'
+import "../styles.css"
 
+const CSS__HANDLES = ["containerPrice", "sellingPrice", "listPrice"]
 
-const CustomProductPrice = () => {
+type Props ={
+    textPrice: string
+}
+
+const CustomProductPrice = ({textPrice}: Props) => {
     const {product} = useProduct()
-    console.log("CONTEXTO DE PRODUCTO", product)
+    const {handles} = useCssHandles(CSS__HANDLES)
+    // console.log("CONTEXTO DE PRODUCTO", product)
 
     const listPrice = product.priceRange.listPrice?.highPrice || 'N/A';
     const sellingPrice = product.priceRange.sellingPrice?.highPrice || 'N/A';
@@ -17,11 +25,29 @@ const CustomProductPrice = () => {
     });
 
     return (
-        <div>
-            <p>Now {formatter.format(listPrice)}</p>
-            <p>{formatter.format(sellingPrice)}</p>
+        <div className={handles["containerPrice"]}>
+            <p className={handles["sellingPrice"]}>{textPrice} {formatter.format(sellingPrice)}</p>
+            <p className={handles["listPrice"]}>{formatter.format(listPrice)}</p>
         </div>
     );
+
+
 };
+
+CustomProductPrice.schema = {
+    title: "Price Custom",
+    type: "object",
+    properties: {
+        textPrice: {
+            title: "text price",
+            type: "string",
+            description: "Please enter the selling price",
+            // widget: {
+            //     "ui:widget": "textarea"
+            // }
+        }
+
+    } 
+}
 
 export default CustomProductPrice
